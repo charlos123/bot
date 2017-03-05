@@ -4,13 +4,13 @@ source("gsLoader.R")
 # Tests
 #
 
-gsLoader.loadSceduleData.test <- function(){
+gsLoader.loadScheduleData.test <- function(){
   #test default file and DF data
-  res <- gsLoader.loadSceduleData()
+  res <- gsLoader.loadScheduleData()
   
-  if (res[[1]]$takingNum != 1) writeLines("gsLoader.loadSceduleData.test Failed") else writeLines("gsLoader.loadSceduleData.test Pass")
+  if (res[[1]]$takingNum != 1) writeLines("gsLoader.loadScheduleData.test Failed") else writeLines("gsLoader.loadScheduleData.test Pass")
   if (res[[2]]$takingNum != 2) 
-    writeLines("gsLoader.loadSceduleData.test Failed") else writeLines("gsLoader.loadSceduleData.test Pass")
+    writeLines("gsLoader.loadScheduleData.test Failed") else writeLines("gsLoader.loadScheduleData.test Pass")
 }
 
-gsLoader.loadSceduleData.test()
+gsLoader.loadScheduleData.test()

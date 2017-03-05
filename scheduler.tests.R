@@ -5,11 +5,13 @@ source("scheduler.R")
 #
 scheduler.getSampleSchedule <- function(){
   schedule <- list()
-  schedule[[1]] <- list(id = 1, date_time = as.POSIXct("2017-04-03 15:00 EEST"), proteins_food = "meat", proteins_mass = 200)
+  dish <- list(name = "meat", weight = 150)
+  
+  schedule[[1]] <- list(id = 1, date_time = as.POSIXct("2017-04-03 15:00 EEST"), dishes <- list(dish))
   schedule[[2]] <- list(
     id = 2, 
     date_time = as.POSIXct("2017-04-03 16:00 EEST"), 
-    proteins_food = "meat", proteins_mass = 200
+    dishes <- list(dish, dish)
   )
   
   return(schedule)  
@@ -84,9 +86,6 @@ scheduler.findEventsByParam.test <- function(schedule, param_name, param_value) 
   res <- scheduler.findEventsByParam(schedule, "id", 1)
   if (length(res) != 1) writeLines("scheduler.findEventsByParam.test Failed") else writeLines("scheduler.findEventsByParam.test Pass")
   
-  res <- scheduler.findEventsByParam(schedule, "proteins_food", "meat")
-  if (length(res) != 2) writeLines("scheduler.findEventsByParam.test Failed") else writeLines("scheduler.findEventsByParam.test Pass")
-
   res <- scheduler.findEventsByParam(schedule, "date", as.Date("2017-04-03"))
   if (length(res) != 2) writeLines("scheduler.findEventsByParam.test Failed") else writeLines("scheduler.findEventsByParam.test Pass")
 
@@ -105,8 +104,6 @@ scheduler.findEventPositionsByParam.test <- function(schedule, param_name, param
   res <- scheduler.findEventPositionsByParam(schedule, "id", 1)
   if (all(res != c(TRUE,FALSE))) writeLines("scheduler.findEventPositionsByParam.test Failed") else writeLines("scheduler.findEventPositionsByParam.test Pass")
   
-  res <- scheduler.findEventPositionsByParam(schedule, "proteins_food", "meat")
-  if (all(res != c(TRUE,TRUE))) writeLines("scheduler.findEventPositionsByParam.test Failed") else writeLines("scheduler.findEventPositionsByParam.test Pass")
 }
 scheduler.findEventPositionsByParam.test()
 

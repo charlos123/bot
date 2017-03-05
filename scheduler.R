@@ -17,11 +17,13 @@ scheduler.getEventsByDate <- function(schedule, date) {
 }
 
 scheduler.findEventsByParam <- function(schedule, param_name, param_value) {
+  #note:only non-list params are allowed
   ve <- scheduler.findEventPositionsByParam(schedule, param_name, param_value)
   return(schedule[ve])
 }
 
 scheduler.findEventPositionsByParam <- function(schedule, param_name, param_value) {
+  #note:only non-list params are allowed
   ve <- NULL
   if (param_name == "date"){
     ve <- sapply(schedule, function(x) as.Date(x[["date_time"]])) == param_value
