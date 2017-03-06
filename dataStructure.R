@@ -1,60 +1,63 @@
+source("userDataStorage.R")
+require(uuid)
+library(dplyr)
 
-source("gsLoader.R")
-
-schedule.df <- gsLoader.loadScheduleData2Df()
-
-summary(schedule.df)
-
-names(schedule.df)
-
-
-
-dish <- list(name = "perlovka", weight = 150)
-
-taking <- list(id = 1, date_time = Sys.Date(), dishes =list(dish, dish))
-
-oneDaySchedule <- list(date = Sys.Date(), takings = list(taking, taking))
+#gs df structure consts
+options(
+  df.dishes_offset = 1,
+  df.max_dishes = 4,
+  df.dish_components = 2)
 
 
-userTaking1 <- list(
-					#taking number of a given day
-					takingId = 1, 
-					loggedTime = Sys.time(), 
-					execTime = Sys.time(),
-					asPlanned = TRUE,
-					dishesTaken = list(dish, dish)
-				)
 
-userTaking2 <- list(
-					takingId = 1, 
-					loggedTime = Sys.time(), 
-					execTime = Sys.time(),
-					asPlanned = FALSE,
-					dishesTaken = list(dish, dish)
-				)
+dishesOffset <- getOption("df.dishes_offset")
+maxDishes <- getOption("df.max_dishes")
+dishComponents <- getOption("df.dish_components")
 
-userTaking3 <- list(
-					#not connected to particular taking
-					takingId = NULL, 
-					loggedTime = Sys.time(),
-					execTime = Sys.time(),
-					#should always be FALSE if scheduleTakingNum == NULL
-					asPlanned = FALSE,
-					dishesTaken = list(dish, dish)
-				)
+updatePlannedTakingsFromGS <- function(userData, date){
+	#load takings from df
+	schedule.df <- gsLoader.loadScheduleData2Df()
+
+	getListOfListOfDishPairs <- function(aTaking){
+		names <- aTaking %>% select((1+dishesOffset):(dishesOffset+maxDishes)) %>% sapply(as.character) %>% na.omit() %>% as.vector 
+		weights <- aTaking %>% select((dishesOffset+maxDishes):(dishesOffset+2*maxDishes)) %>% sapply(as.character) %>% na.omit() %>% as.vector 
+
+		lapply(1:length(names), function(x) list(name=names[x], weight= weights[x]))
+	}
 
 
-userTakings <- list(userTackings = list(userTaking1, userTaking2, userTaking3))
 
-userData <- list(
-		name = "Oleg",
-		globalTarget = "weight == 83",
-		calendar = list(
-				date = Sys.Date(),
-				# all other params contain only events for a given day
-				physicalParams = list(), 
-				schedule = list(oneDaySchedule),
-				userTakings = userTakings,
-				phisicalActivities = list()
-			)
-	)
+	#if date is not in availableDates we add it to the vector
+	#note: expect to find only one matching
+	if(is.na(match(theDate, userData$availableDates))) 
+		userData$availableDates <- append(userData$availableDates, theDate)
+
+
+	calendarItem <- userData$calendar[[match(theDate, userData$availableDates)]]
+	#overwrite date of the calendar (might be missing)
+	calendarItem$date <- theDate
+	calendarItem$plannedTakings <- lapply(1:max(schedule.df$takingNum), function(x) 
+			getListOfListOfDishPairs(schedule.df[x,])
+		)
+
+	userData$calendar[[match(theDate, userData$availableDates)]] <- calendarItem
+
+	return(userData)
+}
+
+
+	userData <- uds.loadUserDataById(1)
+
+	theDate <- Sys.Date()
+
+	userData <- updatePlannedTakingsFromGS(userData, theDate)
+
+	userData$calendar[[1]]$plannedTakings
+
+
+
+#taking$dishes <- getListOfListOfDishPairs(schedule.df[1,])
+
+
+
+
