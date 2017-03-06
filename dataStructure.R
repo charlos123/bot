@@ -37,7 +37,7 @@ updatePlannedTakingsFromGS <- function(userData, date){
 	#overwrite date of the calendar (might be missing)
 	calendarItem$date <- theDate
 	calendarItem$plannedTakings <- lapply(1:max(schedule.df$takingNum), function(x) 
-			getListOfListOfDishPairs(schedule.df[x,])
+			takingNum = x, dishes = getListOfListOfDishPairs(schedule.df[x,])
 		)
 
 	userData$calendar[[match(theDate, userData$availableDates)]] <- calendarItem
