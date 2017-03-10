@@ -1,5 +1,5 @@
 require(googlesheets)
-source("credentials.R")
+source("gsCredentials.R")
 
 
 gsLoader.loadScheduleData <- function(

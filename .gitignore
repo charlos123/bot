@@ -2,5 +2,6 @@
 .Rhistory
 .RData
 .Ruserdata
-credentials.R
+telegramCredentials.R
+gsCredentials.R
 .httr-oauth
