@@ -2,7 +2,7 @@ library(telegram)
 source("/Users/olegkondratenko/Downloads/R projects/telegramCredentials.R")
 
 
-initBot <- function(){
+telConnector.initBot <- function(){
 	## Create the bot object
 	bot <- TGBot$new(token = getOption("telegrambot.token"))
 
@@ -20,7 +20,7 @@ initBot <- function(){
 }
 
 
-sendMessage <- function(text = "Message is missing") {
+telConnector.sendMessage <- function(text = "Message is missing") {
 	bot$sendMessage(text)
 }
 
@@ -100,13 +100,3 @@ forRef <- function() {
 		  Sys.sleep(newdate  - Sys.time())    
 		}
 }
-
-
-# probably here should only be single call for CRAN
-bot <- initBot()
-
-args = commandArgs(trailingOnly=TRUE)
-
-writeLines(paste0(args))
-
-sendMessage(args[1])
